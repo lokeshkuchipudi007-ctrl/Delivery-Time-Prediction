@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Delivery Time Prediction</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="card">
+    <h1>Delivery Time Prediction</h1>
+    <p class="subtitle">Estimate how long an order will take to arrive.</p>
+
+    <form method="post" action="/">
+      <label>Distance (km)
+        <input type="number" name="distance_km" step="0.1" min="0.1" max="100"
+               value="{{ form.get('distance_km', '') }}" required>
+      </label>
+
+      <label>Preparation time (min)
+        <input type="number" name="prep_time_min" step="1" min="0" max="120"
+               value="{{ form.get('prep_time_min', '') }}" required>
+      </label>
+
+      <label>Courier experience (years)
+        <input type="number" name="courier_experience_years" step="0.1" min="0" max="40"
+               value="{{ form.get('courier_experience_years', '') }}" required>
+      </label>
+
+      <label>Traffic
+        <select name="traffic" required>
+          {% for opt in options.traffic %}
+          <option value="{{ opt }}" {{ 'selected' if form.get('traffic') == opt }}>{{ opt|capitalize }}</option>
+          {% endfor %}
+        </select>
+      </label>
+
+      <label>Weather
+        <select name="weather" required>
+          {% for opt in options.weather %}
+          <option value="{{ opt }}" {{ 'selected' if form.get('weather') == opt }}>{{ opt|capitalize }}</option>
+          {% endfor %}
+        </select>
+      </label>
+
+      <button type="submit">Predict</button>
+    </form>
+
+    {% if prediction is defined %}
+    <div class="result" role="status">
+      Estimated delivery time: <strong>{{ prediction }} minutes</strong>
+    </div>
+    {% endif %}
+
+    {% if error %}
+    <div class="error" role="alert">{{ error }}</div>
+    {% endif %}
+  </main>
+</body>
+</html>
